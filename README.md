@@ -114,6 +114,7 @@ KulryApp/
 | test_login_with_wrong_credentials | - | 잘못된 계정 로그인 시 로그인 화면 유지 |
 | test_category_tab | smoke | 카테고리 탭 진입 및 목록 노출 |
 | test_my_tab_opens | smoke | 마이탭 진입 및 콘텐츠 노출 (로그인/비로그인) |
+| test_cart_opens | smoke | 장바구니 화면 진입 및 타이틀 노출 |
 | test_home_has_no_broken_images | image_validation | 홈 화면 깨진 이미지 없음 |
 
 ## 앱 정보
