@@ -1,0 +1,26 @@
+# 환경 변수
+.env
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+
+# 테스트 산출물
+reports/
+screenshots/
+page_sources/
+logs/
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# dump 파일
+*.xml
+*.png
