@@ -1,5 +1,9 @@
 ﻿Appium-Python-Client==5.3.1
 pytest==8.3.5
 pytest-html==4.1.1
+allure-pytest==2.13.5
 flaky==3.8.1
 python-dotenv==1.1.0
+groq==0.28.0
+requests==2.32.3
+pytest-bdd==7.3.0

@@ -1,0 +1,1 @@
+[32mINFO    [0m src.conftest:conftest.py:19 Kurly test environment is ready

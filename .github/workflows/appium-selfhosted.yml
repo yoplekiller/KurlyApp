@@ -1,0 +1,78 @@
+name: Appium Tests (Self-hosted Device)
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      device_profile:
+        description: "device_profiles.json에 등록된 기기 프로필 이름"
+        required: false
+        default: "galaxy_a23"
+
+jobs:
+  appium-tests:
+    runs-on: self-hosted
+    timeout-minutes: 20
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt
+
+      - name: Check device connected
+        run: |
+          connected=$(adb devices | awk 'NR>1 && $2=="device" {print $1}')
+          if [ -z "$connected" ]; then
+            echo "연결된 기기가 없습니다 (adb devices 결과 비어있음) — 폰을 연결하고 다시 실행하세요."
+            exit 1
+          fi
+          echo "Connected device(s): $connected"
+
+      - name: Start Appium server
+        run: |
+          nohup appium --allow-insecure=chromedriver_autodownload > appium.log 2>&1 &
+          echo $! > appium.pid
+
+          for i in $(seq 1 30); do
+            if curl -sf http://127.0.0.1:4723/status > /dev/null; then
+              echo "Appium server is up"
+              exit 0
+            fi
+            sleep 2
+          done
+
+          echo "Appium 서버가 30초 안에 기동되지 않았습니다"
+          cat appium.log
+          exit 1
+
+      - name: Run Appium tests
+        env:
+          DEVICE_PROFILE: ${{ github.event.inputs.device_profile || 'galaxy_a23' }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: pytest --device-profile="$DEVICE_PROFILE"
+
+      - name: Stop Appium server
+        if: always()
+        run: |
+          if [ -f appium.pid ]; then
+            kill "$(cat appium.pid)" 2>/dev/null || true
+            rm -f appium.pid
+          fi
+
+      - name: Upload test artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: appium-test-results
+          path: |
+            reports/
+            screenshots/
+            allure-results/
+            appium.log
+          retention-days: 14

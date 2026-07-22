@@ -15,6 +15,7 @@ reports/
 screenshots/
 page_sources/
 logs/
+allure-report/
 
 # IDE
 .idea/

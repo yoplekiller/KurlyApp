@@ -1,64 +1,86 @@
 import time
-
 from appium.webdriver.common.appiumby import AppiumBy
 from appium.webdriver.webdriver import WebDriver
-from selenium.common.exceptions import NoSuchElementException, TimeoutException
+from selenium.common.exceptions import NoSuchElementException, TimeoutException, WebDriverException
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
-from utils.context_manager import NATIVE, switch_to_native
 from utils.logger import get_logger
 
 logger = get_logger(__name__)
 
+_HOME_LOCATOR = (AppiumBy.ID, "com.dbs.kurly.m2:id/bottom_navigation")
 
-def handle_kurly_popups(driver: WebDriver, wait_time: float = 2) -> None:
-    switch_to_native(driver)
+
+def _is_home(driver: WebDriver, timeout: float = 2) -> bool:
     try:
-        WebDriverWait(driver, wait_time).until(
-            EC.presence_of_element_located((AppiumBy.ID, "com.dbs.kurly.m2:id/bottom_navigation"))
-        )
-    except TimeoutException:
+        WebDriverWait(driver, timeout).until(EC.presence_of_element_located(_HOME_LOCATOR))
+        return True
+    except (TimeoutException, WebDriverException):
+        return False
+
+
+def handle_kurly_popups(driver: WebDriver, wait_time: float = 8) -> None:
+    if _is_home(driver, wait_time):
+        return
+
+    for _ in range(5):
+        try:
+            closed = _close_permission_popup(driver) or _close_kurly_popup(driver)
+        except WebDriverException as e:
+            logger.warning("Popup handler error: %s", e)
+            break
+        if not closed:
+            break
+        time.sleep(1.0)
+        if _is_home(driver, 3):
+            return
+
+    # 마지막 수단: 뒤로가기 한 번
+    try:
+        driver.press_keycode(4)
+        time.sleep(1.0)
+        if _is_home(driver, 5):
+            return
+    except WebDriverException:
         pass
-    _allow_android_permissions(driver)
-    _close_common_popups(driver)
+
+    # 앱이 종료됐으면 재활성화
+    try:
+        driver.activate_app("com.dbs.kurly.m2")
+        _is_home(driver, 8)
+    except WebDriverException:
+        pass
 
 
-def _allow_android_permissions(driver: WebDriver, timeout: int = 3) -> None:
-    permission_buttons = [
+def _close_permission_popup(driver: WebDriver, timeout: float = 0.5) -> bool:
+    locators = [
         (AppiumBy.ID, "com.android.permissioncontroller:id/permission_allow_button"),
         (AppiumBy.ID, "com.android.permissioncontroller:id/permission_allow_foreground_only_button"),
-        (AppiumBy.ID, "com.android.permissioncontroller:id/permission_allow_all_button"),
-        (AppiumBy.ID, "com.android.packageinstaller:id/permission_allow_button"),
     ]
-
-    for locator in permission_buttons:
+    for locator in locators:
         try:
-            WebDriverWait(driver, timeout).until(
-                EC.element_to_be_clickable(locator)
-            ).click()
-            logger.info("Android permission popup accepted: %s", locator)
-        except (TimeoutException, NoSuchElementException):
+            WebDriverWait(driver, timeout).until(EC.element_to_be_clickable(locator)).click()
+            logger.info("Permission accepted: %s", locator)
+            return True
+        except (TimeoutException, NoSuchElementException, WebDriverException):
             continue
+    return False
 
 
-def _close_common_popups(driver: WebDriver, timeout: int = 2) -> None:
-    close_locators = [
-        (AppiumBy.ACCESSIBILITY_ID, "닫기"),
-        (AppiumBy.ACCESSIBILITY_ID, "close"),
-        (AppiumBy.XPATH, "//*[@text='닫기']"),
-        (AppiumBy.XPATH, "//*[@text='오늘 하루 보지 않기']"),
-        (AppiumBy.XPATH, "//*[contains(@text, '닫기')]"),
-        (AppiumBy.XPATH, "//*[contains(@content-desc, '닫기')]"),
-        (AppiumBy.XPATH, "//*[contains(@resource-id, 'close')]"),
+def _close_kurly_popup(driver: WebDriver, timeout: float = 0.5) -> bool:
+    locators = [
+        (AppiumBy.ID, "com.dbs.kurly.m2:id/denyButton"),
+        (AppiumBy.ID, "com.dbs.kurly.m2:id/negativeButton"),
+        (AppiumBy.ID, "com.dbs.kurly.m2:id/btnNegative"),  # 로그인 유도 팝업 거부
+        (AppiumBy.ID, "com.dbs.kurly.m2:id/closeButton"),  # 라이브 커머스 닫기
+        (AppiumBy.XPATH, "//*[contains(@text, '보지 않기')]"),
     ]
-
-    for locator in close_locators:
+    for locator in locators:
         try:
-            WebDriverWait(driver, timeout).until(
-                EC.element_to_be_clickable(locator)
-            ).click()
+            WebDriverWait(driver, timeout).until(EC.element_to_be_clickable(locator)).click()
             logger.info("Popup closed: %s", locator)
-            time.sleep(0.5)
-        except (TimeoutException, NoSuchElementException):
+            return True
+        except (TimeoutException, NoSuchElementException, WebDriverException):
             continue
+    return False

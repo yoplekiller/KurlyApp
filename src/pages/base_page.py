@@ -4,31 +4,59 @@ from pathlib import Path
 from typing import Any
 from appium.webdriver.common.appiumby import AppiumBy
 from appium.webdriver.webdriver import WebDriver
+from groq import Groq
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
+from selenium.webdriver.common.actions import interaction
+from selenium.webdriver.common.actions.action_builder import ActionBuilder
+from selenium.webdriver.common.actions.pointer_input import PointerInput
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
 from config.app_config import AppConfig
-from utils.context_manager import switch_to_native, switch_to_webview
 from utils.logger import get_logger
+from utils.self_healer import suggest_locator
 
 Locator = tuple[str, str]
 logger = get_logger(__name__)
 
+_groq_client: Groq | None = Groq(api_key=AppConfig.GROQ_API_KEY) if AppConfig.GROQ_API_KEY else None
 
-#   BasePage는 모든 페이지 객체의 공통 기능을 제공하는 클래스입니다.
+
 class BasePage:
-    # 페이지 객체는 Appium WebDriver 인스턴스를 받아 초기화됩니다.  
     def __init__(self, driver: WebDriver) -> None:
         self.driver = driver
         self.wait = WebDriverWait(driver, AppConfig.DEFAULT_TIMEOUT)
 
-    #   find_element, find_elements, click, input_text, get_text 등은 페이지 객체에서 자주 사용되는 기본적인 요소 상호작용 메서드입니다.
     def find_element(self, locator: Locator, timeout: int | None = None) -> WebElement:
-        return WebDriverWait(driver=self.driver, timeout=timeout or AppConfig.DEFAULT_TIMEOUT).until(
-            EC.presence_of_element_located(locator)
-        )
+        try:
+            return WebDriverWait(driver=self.driver, timeout=timeout or AppConfig.DEFAULT_TIMEOUT).until(
+                EC.presence_of_element_located(locator)
+            )
+        except (TimeoutException, NoSuchElementException):
+            healed = self._try_heal(locator) if AppConfig.HEALING_ENABLED else None
+            if healed is not None:
+                return healed
+            raise
+
+    def _try_heal(self, original_locator: Locator) -> WebElement | None:
+        if _groq_client is None:
+            logger.warning("Self-healing skipped: GROQ_API_KEY not set")
+            return None
+        try:
+            logger.warning("Self-healing triggered for locator: %s", original_locator)
+            page_source = self.driver.page_source
+            new_locator = suggest_locator(original_locator, page_source, _groq_client)
+            if new_locator is None:
+                return None
+            element = WebDriverWait(self.driver, AppConfig.SHORT_TIMEOUT).until(
+                EC.presence_of_element_located(new_locator)
+            )
+            logger.info("Self-healed: %s → %s", original_locator, new_locator)
+            return element
+        except Exception as e:
+            logger.warning("Self-healing failed: %s", e)
+            return None
 
     def find_elements(self, locator: Locator, timeout: int | None = None) -> list[WebElement]:
         return WebDriverWait(driver=self.driver, timeout=timeout or AppConfig.DEFAULT_TIMEOUT).until(
@@ -60,6 +88,13 @@ class BasePage:
         except TimeoutException:
             return False
 
+    def is_present(self, locator: Locator, timeout: int = AppConfig.SHORT_TIMEOUT) -> bool:
+        try:
+            WebDriverWait(self.driver, timeout).until(EC.presence_of_element_located(locator))
+            return True
+        except TimeoutException:
+            return False
+
     def safe_click(self, locator: Locator, timeout: int = AppConfig.SHORT_TIMEOUT) -> bool:
         try:
             self.click(locator, timeout)
@@ -78,18 +113,41 @@ class BasePage:
     def swipe_up(self, duration: int = 500) -> None:
         size = self.driver.get_window_size()
         x = size["width"] // 2
-        start_y = int(size["height"] * 0.78)
-        end_y = int(size["height"] * 0.25)
-        self.driver.swipe(x, start_y, x, end_y, duration)
-        time.sleep(0.5)
+        self._w3c_swipe(
+            start_x=x,
+            start_y=int(size["height"] * 0.78),
+            end_x=x,
+            end_y=int(size["height"] * 0.25),
+            duration=duration,
+        )
 
     def swipe_down(self, duration: int = 500) -> None:
         size = self.driver.get_window_size()
         x = size["width"] // 2
-        start_y = int(size["height"] * 0.25)
-        end_y = int(size["height"] * 0.78)
-        self.driver.swipe(x, start_y, x, end_y, duration)
-        time.sleep(0.5)
+        self._w3c_swipe(
+            start_x=x,
+            start_y=int(size["height"] * 0.25),
+            end_x=x,
+            end_y=int(size["height"] * 0.78),
+            duration=duration,
+        )
+
+    def _w3c_swipe(
+        self,
+        start_x: int,
+        start_y: int,
+        end_x: int,
+        end_y: int,
+        duration: int = 500,
+    ) -> None:
+        finger = PointerInput(interaction.POINTER_TOUCH, "finger")
+        actions = ActionBuilder(self.driver, mouse=finger)
+        actions.pointer_action.move_to_location(start_x, start_y)
+        actions.pointer_action.pointer_down()
+        actions.pointer_action.pause(duration / 1000)
+        actions.pointer_action.move_to_location(end_x, end_y)
+        actions.pointer_action.release()
+        actions.perform()
 
     def take_screenshot(self, name: str) -> str:
         AppConfig.ensure_directories()
@@ -97,12 +155,6 @@ class BasePage:
         path = Path(AppConfig.SCREENSHOT_DIR) / f"{name}_{timestamp}.png"
         self.driver.get_screenshot_as_file(str(path))
         return str(path)
-
-    def switch_to_webview(self, timeout: int = 15) -> bool:
-        return switch_to_webview(self.driver, timeout)
-
-    def switch_to_native(self) -> None:
-        switch_to_native(self.driver)
 
     def find_element_by_css(self, css: str, timeout: int | None = None) -> WebElement:
         return WebDriverWait(self.driver, timeout or AppConfig.DEFAULT_TIMEOUT).until(

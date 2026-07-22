@@ -1,0 +1,1 @@
+2026-05-26 01:07:37,049 [INFO] src.conftest - Kurly test environment is ready
