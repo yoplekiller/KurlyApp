@@ -16,6 +16,8 @@ _COMMON_CAPABILITIES: dict[str, Any] = {
     "chromedriverAutodownload": True,
     "newCommandTimeout": 300,
     "keepScreenOn": True,   # 테스트 중 화면 꺼짐 방지
+    "uiautomator2ServerInstallTimeout": 120000,  # UiAutomator2 서버 APK 최초 설치가 기본 20s보다 오래 걸림
+    "adbExecTimeout": 120000,
 }
 
 
