@@ -18,6 +18,9 @@ class CategoryPage(BasePage):
         if not self.is_present(_CATEGORY_TAB, timeout=2):
             self.driver.press_keycode(4)  # Back key to dismiss fullscreen overlay (e.g. search screen)
         self.click(_CATEGORY_TAB)
+        # noReset=True로 인해 이전 세션에서 뷰티컬리 서브탭을 선택한 상태가 남아있을 수 있어
+        # 항상 마켓컬리 서브탭으로 명시적으로 맞춰준다.
+        self.click(_MARKET_KURLY_TAB)
 
     def is_loaded(self, timeout: int = AppConfig.DEFAULT_TIMEOUT) -> bool:
         return self.is_visible(_MARKET_KURLY_TAB, timeout)
