@@ -8,7 +8,7 @@ on:
       device_profile:
         description: "device_profiles.json에 등록된 기기 프로필 이름"
         required: false
-        default: "galaxy_a23"
+        default: "galaxy_a32"
 
 jobs:
   appium-tests:
@@ -52,7 +52,7 @@ jobs:
 
       - name: Run Appium tests
         env:
-          DEVICE_PROFILE: ${{ github.event.inputs.device_profile || 'galaxy_a23' }}
+          DEVICE_PROFILE: ${{ github.event.inputs.device_profile || 'galaxy_a32' }}
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: pytest --device-profile="$DEVICE_PROFILE"

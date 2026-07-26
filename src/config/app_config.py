@@ -36,7 +36,7 @@ class AppConfig:
     POPUP_WAIT = float(os.getenv("POPUP_WAIT", "8"))
 
     # 실행할 기기 프로필 (device_profiles.json의 키) — --device-profile CLI 옵션으로 재정의 가능
-    DEVICE_PROFILE = os.getenv("DEVICE_PROFILE", "galaxy_a23")
+    DEVICE_PROFILE = os.getenv("DEVICE_PROFILE", "galaxy_a32")
 
     # 아티팩트 저장 경로
     SCREENSHOT_DIR = "screenshots"
