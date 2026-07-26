@@ -2,9 +2,9 @@
   "galaxy_a23": {
     "platformName": "Android",
     "automationName": "UiAutomator2",
-    "deviceName": "R59T304FH1B",
-    "udid": "adb-R59T304FH1B-07Djog._adb-tls-connect._tcp",
-    "platformVersion": "14",
+    "deviceName": "RF9RB057H9F",
+    "udid": "RF9RB057H9F",
+    "platformVersion": "13",
     "appPackage": "com.dbs.kurly.m2",
     "appActivity": ""
   }
