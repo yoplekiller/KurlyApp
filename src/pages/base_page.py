@@ -64,9 +64,15 @@ class BasePage:
         )
 
     def click(self, locator: Locator, timeout: int | None = None) -> WebElement:
-        element = WebDriverWait(driver=self.driver, timeout=timeout or AppConfig.DEFAULT_TIMEOUT).until(
-            EC.element_to_be_clickable(locator)
-        )
+        try:
+            element = WebDriverWait(driver=self.driver, timeout=timeout or AppConfig.DEFAULT_TIMEOUT).until(
+                EC.element_to_be_clickable(locator)
+            )
+        except (TimeoutException, NoSuchElementException):
+            healed = self._try_heal(locator) if AppConfig.HEALING_ENABLED else None
+            if healed is None:
+                raise
+            element = healed
         element.click()
         logger.info("Clicked: %s", locator)
         return element

@@ -9,7 +9,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
 
-from popup_handler import handle_kurly_popups
+from utils.popup_handler import handle_kurly_popups
 
 caps = {
     "platformName": "Android",

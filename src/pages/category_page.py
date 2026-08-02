@@ -15,7 +15,9 @@ class CategoryPage(BasePage):
         super().__init__(driver)
 
     def navigate(self) -> None:
-        if not self.is_present(_CATEGORY_TAB, timeout=2):
+        for _ in range(3):
+            if self.is_present(_CATEGORY_TAB, timeout=2):
+                break
             self.driver.press_keycode(4)  # Back key to dismiss fullscreen overlay (e.g. search screen)
         self.click(_CATEGORY_TAB)
         # noReset=True로 인해 이전 세션에서 뷰티컬리 서브탭을 선택한 상태가 남아있을 수 있어
