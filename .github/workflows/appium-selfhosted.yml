@@ -35,7 +35,7 @@ jobs:
 
       - name: Start Appium server
         run: |
-          nohup appium --allow-insecure=chromedriver_autodownload > appium.log 2>&1 &
+          nohup appium --allow-insecure=uiautomator2:chromedriver_autodownload > appium.log 2>&1 &
           echo $! > appium.pid
 
           for i in $(seq 1 30); do
