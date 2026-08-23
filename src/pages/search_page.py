@@ -6,6 +6,7 @@ from pages.base_page import BasePage
 
 _SEARCH_TAB = (AppiumBy.ID, "com.dbs.kurly.m2:id/search")
 _SEARCH_INPUT = (AppiumBy.XPATH, "//android.widget.EditText")
+_RECOMMENDED_KEYWORDS = (AppiumBy.XPATH, "//*[@text='추천 검색어']")
 
 
 class SearchPage(BasePage):
@@ -28,3 +29,6 @@ class SearchPage(BasePage):
     def has_results(self, keyword: str, timeout: int = AppConfig.DEFAULT_TIMEOUT) -> bool:
         locator = (AppiumBy.XPATH, f"//*[contains(@text, '{keyword}')]")
         return self.is_visible(locator, timeout)
+
+    def has_recommended_keywords(self, timeout: int = AppConfig.DEFAULT_TIMEOUT) -> bool:
+        return self.is_visible(_RECOMMENDED_KEYWORDS, timeout)
