@@ -24,6 +24,13 @@ class HomePage(BasePage):
     def has_products(self, timeout: int = AppConfig.DEFAULT_TIMEOUT) -> bool:
         return self.is_visible(_PRODUCT_ITEM, timeout)
 
+    def open_best_products(self) -> None:
+        self.click(_PRODUCT_ITEM)
+
+    def open_product(self, keyword: str) -> None:
+        locator = (AppiumBy.ANDROID_UIAUTOMATOR, f'new UiSelector().textContains("{keyword}")')
+        self.click(locator)
+
     def has_banner(self, timeout: int = AppConfig.SHORT_TIMEOUT) -> bool:
         return self.is_visible(_BANNER, timeout)
 
