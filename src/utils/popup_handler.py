@@ -75,6 +75,10 @@ def _close_kurly_popup(driver: WebDriver, timeout: float = 0.5) -> bool:
         (AppiumBy.ID, "com.dbs.kurly.m2:id/btnNegative"),  # 로그인 유도 팝업 거부
         (AppiumBy.ID, "com.dbs.kurly.m2:id/closeButton"),  # 라이브 커머스 닫기
         (AppiumBy.XPATH, "//*[contains(@text, '보지 않기')]"),
+        # 신규 회원가입 유도 쿠폰 팝업 - WebView를 감싼 OS 기본 AlertDialog라 앱 id가 아닌
+        # android:id/button1을 씀. resource-id만으로는 다른 다이얼로그의 확인 버튼과 겹칠 수
+        # 있어 text="닫기"까지 같이 확인(무조건 button1을 누르지 않도록 안전장치).
+        (AppiumBy.XPATH, "//*[@resource-id='android:id/button1' and @text='닫기']"),
     ]
     for locator in locators:
         try:
