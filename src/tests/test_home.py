@@ -28,3 +28,10 @@ def test_home_scroll_down_and_back(home):
 def test_home_has_banner(home):
     """홈 화면 상단에 배너(ViewPager)가 표시되는지 확인"""
     assert home.has_banner(), "홈 화면에 배너가 표시되지 않음"
+
+
+@pytest.mark.image_validation
+def test_home_no_broken_images(home):
+    """홈 화면(배너·상품 이미지)에 깨진 이미지가 없는지 확인"""
+    broken_images = home.find_broken_images()
+    assert not broken_images, f"깨진 이미지 발견: {broken_images}"
