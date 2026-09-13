@@ -8,7 +8,7 @@ def product_detail(driver):
     home = HomePage(driver)
     home.navigate()
     home.open_best_products()
-    home.open_product("헤라")
+    home.open_first_product()
     return ProductDetailPage(driver)
 
 
