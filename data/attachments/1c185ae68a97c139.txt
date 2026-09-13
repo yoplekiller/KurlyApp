@@ -1,0 +1,3 @@
+2026-09-13 19:41:38,092 [INFO] pages.base_page - Clicked: ('id', 'com.dbs.kurly.m2:id/search')
+2026-09-13 19:41:41,700 [INFO] pages.base_page - Clicked: ('id', 'com.dbs.kurly.m2:id/category')
+2026-09-13 19:41:43,726 [INFO] pages.base_page - Clicked: ('xpath', "//*[@text='마켓컬리']")

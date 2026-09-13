@@ -1,3 +1,0 @@
-2026-09-13 19:09:36,532 [INFO] pages.base_page - Clicked: ('id', 'com.dbs.kurly.m2:id/category')
-2026-09-13 19:09:37,783 [INFO] pages.base_page - Clicked: ('xpath', "//*[@text='마켓컬리']")
-2026-09-13 19:09:38,638 [INFO] pages.base_page - Clicked: ('-android uiautomator', 'new UiSelector().text("뷰티컬리").instance(0)')

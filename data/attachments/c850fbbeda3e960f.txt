@@ -1,0 +1,12 @@
+2026-09-13 19:56:39,882 [INFO] src.conftest - Using device profile: galaxy_a32
+2026-09-13 19:56:56,887 [INFO] utils.popup_handler - Popup closed: ('xpath', "//*[@resource-id='android:id/button1' and @text='닫기']")
+2026-09-13 19:58:40,100 [INFO] pages.base_page - Clicked: ('id', 'com.dbs.kurly.m2:id/home')
+2026-09-13 20:00:21,692 [INFO] pages.base_page - Clicked: ('-android uiautomator', 'new UiSelector().text("베스트")')
+2026-09-13 20:00:42,275 [WARNING] pages.base_page - Self-healing triggered for locator: ('-android uiautomator', 'new UiSelector().textContains("헤라")')
+2026-09-13 20:01:05,183 [WARNING] pages.base_page - Self-healing failed: Message: 
+Stacktrace:
+NoSuchElementError: An element could not be located on the page using the given search parameters.
+    at AndroidUiautomator2Driver.findElOrEls (C:\Users\jmlim\.appium\node_modules\appium-uiautomator2-driver\node_modules\appium-android-driver\lib\commands\find.ts:86:11)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at AndroidUiautomator2Driver.findElOrElsWithProcessing (C:\Users\jmlim\AppData\Roaming\npm\node_modules\appium\node_modules\@appium\base-driver\lib\basedriver\commands\find.ts:60:12)
+    at AndroidUiautomator2Driver.findElement (C:\Users\jmlim\AppData\Roaming\npm\node_modules\appium\node_modules\@appium\base-driver\lib\basedriver\commands\find.ts:75:12)

@@ -1,0 +1,2 @@
+2026-09-13 19:49:20,458 [INFO] src.conftest - Using device profile: galaxy_a32
+2026-09-13 19:49:37,593 [INFO] utils.popup_handler - Popup closed: ('xpath', "//*[@resource-id='android:id/button1' and @text='닫기']")

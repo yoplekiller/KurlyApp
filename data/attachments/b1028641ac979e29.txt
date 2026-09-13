@@ -1,5 +1,0 @@
-2026-09-13 19:12:10,004 [INFO] src.conftest - Using device profile: galaxy_a32
-2026-09-13 19:12:27,162 [INFO] utils.popup_handler - Popup closed: ('xpath', "//*[@resource-id='android:id/button1' and @text='닫기']")
-2026-09-13 19:14:00,891 [INFO] pages.base_page - Clicked: ('id', 'com.dbs.kurly.m2:id/category')
-2026-09-13 19:14:02,361 [INFO] pages.base_page - Clicked: ('xpath', "//*[@text='마켓컬리']")
-2026-09-13 19:14:03,136 [INFO] pages.base_page - Clicked: ('id', 'com.dbs.kurly.m2:id/home')
