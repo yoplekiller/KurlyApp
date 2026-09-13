@@ -1,0 +1,4 @@
+2026-09-13 19:18:51,576 [INFO] src.conftest - Using device profile: galaxy_a32
+2026-09-13 19:19:09,778 [INFO] utils.popup_handler - Popup closed: ('xpath', "//*[@resource-id='android:id/button1' and @text='닫기']")
+2026-09-13 19:20:47,778 [INFO] pages.base_page - Clicked: ('id', 'com.dbs.kurly.m2:id/home')
+2026-09-13 19:22:00,856 [INFO] pages.base_page - Clicked: ('xpath', '(//*[@resource-id="com.dbs.kurly.m2:id/appbar"]//android.view.View[@clickable="true"])[5]')

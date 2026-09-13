@@ -1,0 +1,5 @@
+INFO     src.conftest:conftest.py:62 Using device profile: galaxy_a32
+INFO     utils.popup_handler:popup_handler.py:86 Popup closed: ('xpath', "//*[@resource-id='android:id/button1' and @text='닫기']")
+INFO     pages.base_page:base_page.py:77 Clicked: ('id', 'com.dbs.kurly.m2:id/category')
+INFO     pages.base_page:base_page.py:77 Clicked: ('xpath', "//*[@text='마켓컬리']")
+INFO     pages.base_page:base_page.py:77 Clicked: ('id', 'com.dbs.kurly.m2:id/home')

@@ -1,0 +1,1 @@
+2026-09-13 19:24:23,031 [INFO] pages.base_page - Clicked: ('-android uiautomator', 'new UiSelector().text("뷰티컬리").instance(0)')

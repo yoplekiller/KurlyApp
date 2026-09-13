@@ -1,0 +1,3 @@
+INFO     pages.base_page:base_page.py:77 Clicked: ('id', 'com.dbs.kurly.m2:id/search')
+INFO     pages.base_page:base_page.py:77 Clicked: ('id', 'com.dbs.kurly.m2:id/category')
+INFO     pages.base_page:base_page.py:77 Clicked: ('xpath', "//*[@text='마켓컬리']")

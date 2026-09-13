@@ -1,0 +1,1 @@
+INFO     pages.base_page:base_page.py:77 Clicked: ('xpath', "//*[@resource-id='closeButton']")
