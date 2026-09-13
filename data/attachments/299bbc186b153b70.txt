@@ -1,0 +1,1 @@
+2026-09-13 21:07:47,511 [INFO] utils.slack_notifier - Slack 알림 전송 완료: src/tests/test_home.py::test_home_no_broken_images

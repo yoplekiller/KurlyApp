@@ -1,0 +1,5 @@
+2026-09-13 20:47:20,033 [INFO] src.conftest - Kurly test environment is ready
+2026-09-13 20:47:20,035 [INFO] src.conftest - Using device profile: galaxy_a32
+2026-09-13 20:47:37,261 [INFO] utils.popup_handler - Popup closed: ('xpath', "//*[@resource-id='android:id/button1' and @text='닫기']")
+2026-09-13 20:49:11,055 [INFO] pages.base_page - Clicked: ('id', 'com.dbs.kurly.m2:id/category')
+2026-09-13 20:49:12,606 [INFO] pages.base_page - Clicked: ('xpath', "//*[@text='마켓컬리']")
