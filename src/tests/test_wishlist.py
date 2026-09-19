@@ -12,6 +12,7 @@ def product_detail(driver):
     return ProductDetailPage(driver)
 
 
+@pytest.mark.regression
 @pytest.mark.smoke
 def test_wishlist_requires_login(product_detail):
     """비로그인 상태에서 찜(픽) 버튼을 누르면 로그인 유도 안내가 표시되는지 확인"""
@@ -19,6 +20,7 @@ def test_wishlist_requires_login(product_detail):
     assert product_detail.has_login_prompt(), "찜 버튼 클릭 시 로그인 유도 안내가 표시되지 않음"
 
 
+@pytest.mark.regression
 def test_wishlist_prompt_can_cancel(product_detail):
     """로그인 유도 안내를 취소하면 안내가 사라지는지 확인"""
     product_detail.cancel_login_prompt()
