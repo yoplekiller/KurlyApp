@@ -69,3 +69,19 @@ def test_blank_search_redirects_to_event_page(driver):
     search.navigate()
     search.submit_blank_search()
     assert search.is_on_event_page(), "빈 검색어 제출 후 이벤트 페이지로 이동하지 않음"
+
+
+@pytest.mark.regression
+def test_recommended_keyword_opens_results(driver):
+    """추천 검색어 타일을 탭하면 실제 상품 검색 결과 화면으로 이동하는지 확인.
+
+    추천 검색어 콘텐츠(추석선물랭킹 등)는 매일 바뀌는 프로모션성 텍스트라 특정 문구를
+    검증 대상으로 삼지 않고, 결과 화면에 가격("~원")이 노출되는지로 판단한다. 위 테스트들과
+    동일한 이유로 홈 재진입 후 마켓컬리로 초기화하고 검색 탭을 새로 연다.
+    """
+    HomePage(driver).navigate()
+    CategoryPage(driver).navigate()
+    search = SearchPage(driver)
+    search.navigate()
+    search.open_first_recommended_keyword()
+    assert search.has_search_results(), "추천 검색어 탭 후 상품 검색 결과가 표시되지 않음"

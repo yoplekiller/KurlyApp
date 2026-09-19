@@ -8,6 +8,9 @@ _CATEGORY_TAB = (AppiumBy.ID, "com.dbs.kurly.m2:id/category")
 _MARKET_KURLY_TAB = (AppiumBy.XPATH, "//*[@text='마켓컬리']")
 _BEAUTY_KURLY_TAB = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("뷰티컬리").instance(0)')
 _CATEGORY_ITEM = (AppiumBy.XPATH, "//*[@clickable='true' and @focusable='true']/android.widget.TextView[@text='채소']")
+# 채소 카테고리 진입 시 뜨는 하위 카테고리 중 하나. "채소"는 마켓컬리 최상위 고정 카테고리라
+# 상품명과 달리 안정적으로 유지된다고 보고 앵커로 씀(실기기 조사로 확인).
+_VEGETABLE_SUBCATEGORY_MARKER = (AppiumBy.XPATH, "//*[@text='친환경']")
 
 
 class CategoryPage(BasePage):
@@ -35,3 +38,9 @@ class CategoryPage(BasePage):
 
     def switch_to_beauty(self) -> None:
         self.click(_BEAUTY_KURLY_TAB)
+
+    def open_first_category_item(self) -> None:
+        self.click(_CATEGORY_ITEM)
+
+    def is_on_category_detail(self, timeout: int = AppConfig.DEFAULT_TIMEOUT) -> bool:
+        return self.is_visible(_VEGETABLE_SUBCATEGORY_MARKER, timeout)

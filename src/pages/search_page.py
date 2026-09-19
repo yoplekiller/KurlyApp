@@ -7,6 +7,17 @@ from pages.base_page import BasePage
 _SEARCH_TAB = (AppiumBy.ID, "com.dbs.kurly.m2:id/search")
 _SEARCH_INPUT = (AppiumBy.XPATH, "//android.widget.EditText")
 _RECOMMENDED_KEYWORDS = (AppiumBy.XPATH, "//*[@text='추천 검색어']")
+# "추천 검색어" 섹션의 첫 번째 타일. 실제 콘텐츠(추석선물랭킹/아침식사 등)는 매일 바뀌는
+# 프로모션성 텍스트라 특정 문구를 하드코딩하지 않고, 헤더 바로 다음의 스크롤 가능한 행 안에서
+# 첫 번째 clickable 항목으로 구조 기반으로 잡는다(실기기 조사로 확인).
+_FIRST_RECOMMENDED_KEYWORD = (
+    AppiumBy.XPATH,
+    "//*[@text='추천 검색어']/following-sibling::android.view.View[@scrollable='true'][1]"
+    "/android.view.View[@clickable='true'][1]",
+)
+# 검색 실행 결과 화면에 공통으로 뜨는 가격 표시("~원") - 특정 상품명 대신 이걸 앵커로 결과
+# 노출 여부를 확인한다(_ANY_PRODUCT_CARD와 동일한 접근).
+_SEARCH_RESULT_PRICE = (AppiumBy.XPATH, "//android.widget.TextView[contains(@text,'원')]")
 # 완전 일치하는 상품이 없는 검색어를 넣어도 빈 화면이 아니라 이 문구와 함께 "관련 상품"을
 # 대신 보여준다(실기기 조사로 확인 - "zzxxqqweuchsjahdsf12345" 같은 무의미한 키워드로도
 # 총 80개의 관련 상품이 노출됨). 이 앱엔 완전한 "검색 결과 없음" 빈 상태 자체가 없음.
@@ -54,6 +65,12 @@ class SearchPage(BasePage):
 
     def has_recommended_keywords(self, timeout: int = AppConfig.DEFAULT_TIMEOUT) -> bool:
         return self.is_visible(_RECOMMENDED_KEYWORDS, timeout)
+
+    def open_first_recommended_keyword(self) -> None:
+        self.click(_FIRST_RECOMMENDED_KEYWORD)
+
+    def has_search_results(self, timeout: int = AppConfig.DEFAULT_TIMEOUT) -> bool:
+        return self.is_visible(_SEARCH_RESULT_PRICE, timeout)
 
     def has_no_exact_match_message(self, timeout: int = AppConfig.DEFAULT_TIMEOUT) -> bool:
         return self.is_visible(_NO_EXACT_MATCH_MSG, timeout)
