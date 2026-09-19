@@ -108,7 +108,7 @@ KulryApp/
 │   │   └── logger.py
 │   └── conftest.py             # driver fixture(scope=module), --device-profile 옵션
 ├── .github/workflows/
-│   └── appium-selfhosted.yml   # self-hosted 러너 기반 CI (push/workflow_dispatch)
+│   └── appium-selfhosted.yml   # self-hosted 러너 기반 CI (push/workflow_dispatch/매일 09:00 KST 스케줄)
 ├── reports/                    # pytest-html 리포트
 ├── screenshots/ / page_sources/ / logs/  # 실패 시 자동 저장
 ├── pytest.ini
@@ -123,7 +123,7 @@ KulryApp/
 - **BDD 스위트**: pytest-bdd 기반으로 plain pytest와 별도로 핵심 시나리오(home/category/navigation/search) 커버
 - **기기 프로필 다중화**: `device_profiles.json` + `--device-profile` CLI 옵션으로 여러 기기 대응 가능한 구조
 - **팝업 자동 처리**: 앱 실행 시 뜨는 공지/권한 팝업 자동 닫기
-- **CI**: GitHub Actions self-hosted 러너로 push 시 자동 실행 (러너가 오프라인이면 대기 상태로 남음 — 상시 가동 CI는 아님)
+- **CI**: GitHub Actions self-hosted 러너로 push/매일 오전 9시(KST) 정기/수동(`workflow_dispatch`) 실행 - **PC와 폰이 꺼져있으면 예정된 스케줄 실행 자체가 건너뛰어짐**(GitHub Actions는 self-hosted 러너가 오프라인일 때 스케줄 잡을 큐잉하지 않음). 상시 가동을 보장하는 CI가 아니라, 러너가 켜져있을 때 자동으로 최신 상태를 확인하는 용도로 사용.
 
 ## 테스트 시나리오
 

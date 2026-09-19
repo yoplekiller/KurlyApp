@@ -9,6 +9,12 @@ on:
         description: "device_profiles.json에 등록된 기기 프로필 이름"
         required: false
         default: "galaxy_a32"
+  schedule:
+    # 매일 오전 9시(KST, UTC 0시) 스모크+리그레션 정기 실행. self-hosted 러너라 PC/폰이
+    # 꺼져있으면 이 시각엔 그냥 대기 상태로 남고, 다음에 러너가 온라인일 때 실행되지 않음
+    # (cron 잡이 큐잉되지 않음 - GitHub Actions 자체 제약) - 상시 가동 CI가 아니라는 점을
+    # README에 명시함.
+    - cron: "0 0 * * *"
 
 permissions:
   contents: write
