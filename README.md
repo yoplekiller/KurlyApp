@@ -127,27 +127,37 @@ KulryApp/
 
 ## 테스트 시나리오
 
+Plain pytest 25건(전부 `regression` 마커, 일부는 `smoke`도 겸함) + BDD 10건(아래 "주요 기능" 참고), 총 35건.
+
 | 테스트 | 마커 | 설명 |
 |--------|------|------|
 | `test_home_is_loaded` | - | 홈 화면 정상 로딩 |
 | `test_home_has_products` | - | 홈 상품 카드(베스트 탭) 노출 |
 | `test_home_scroll_down_and_back` | - | 스크롤 후 하단 탭바 유지 |
 | `test_home_has_banner` | - | 홈 배너(ViewPager) 노출 |
+| `test_home_no_broken_images` | - | 홈 화면(배너·상품 이미지)에 깨진 이미지 없는지 확인 |
 | `test_category_tab_opens` | - | 카테고리 탭 진입 |
 | `test_category_list_visible` | - | 카테고리 목록(마켓컬리 서브탭 기준) 노출 |
-| `test_beauty_kurly_tab_switch` | - | 뷰티컬리 탭 전환 |
+| `test_beauty_kurly_tab_switch` | smoke | 뷰티컬리 탭 전환 |
+| `test_category_item_opens_subcategory` | - | 카테고리 항목(채소) 클릭 → 하위 카테고리 화면 진입 |
 | `test_search_tab_opens` | - | 검색 탭 진입 |
 | `test_search_has_recommended_keywords` | - | 추천 검색어 노출 |
+| `test_search_returns_results` | smoke | 검색어 입력·제출 → 결과 화면 노출 |
+| `test_search_no_exact_match_shows_related_products` | - | 완전일치 없는 검색어 → 관련 상품 폴백 노출(웹과 다른 실제 동작) |
+| `test_blank_search_redirects_to_event_page` | - | 빈 검색어 제출 → 이벤트 페이지 리다이렉트(웹과 다른 실제 동작) |
+| `test_recommended_keyword_opens_results` | - | 추천 검색어 타일 클릭 → 실제 상품 검색 결과 진입 |
 | `test_lounge_tab_opens` | smoke | 라운지 탭(웹뷰) 진입 |
 | `test_lounge_has_content_tabs` | - | 라운지 콘텐츠 탭 노출 |
 | `test_login_screen_opens` | - | 로그인 폼 진입 |
 | `test_login_with_wrong_credentials` | ⚠️ skip | 오답 계정 로그인 실패 — 운영 서버가 반복 시도 시 에러 알림을 더 이상 노출하지 않아 skip 처리 |
 | `test_cart_opens` | smoke | 장바구니 화면 진입 |
 | `test_cart_can_close` | - | 장바구니 닫기 |
+| `test_quick_add_to_cart_increases_badge_count` | smoke | 목록에서 퀵 담기 → 담기 확인 메시지 노출 + 배지 수량 유지/증가 |
 | `test_wishlist_requires_login` | smoke | 비로그인 상태 찜(픽) 버튼 → 로그인 유도 노출 |
 | `test_wishlist_prompt_can_cancel` | - | 로그인 유도 팝업 취소 |
+| `test_resumes_correctly_after_backgrounding` | smoke | 백그라운드 전환 후 복귀 시 홈 화면·상품 목록 유지 |
 
-로그인 성공 이후 상태(찜 목록 반영, 주문내역 등)는 테스트 계정이 없어 범위 밖입니다.
+로그인 성공 이후 상태(찜 목록 반영, 주문내역 등)와 장바구니 내부(수량변경/삭제, WebView라 Appium으로 접근 불가)는 테스트 계정·플랫폼 제약으로 범위 밖입니다.
 
 ## 앱 정보
 
