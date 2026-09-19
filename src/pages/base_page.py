@@ -5,7 +5,7 @@ from typing import Any
 from appium.webdriver.common.appiumby import AppiumBy
 from appium.webdriver.webdriver import WebDriver
 from groq import Groq
-from selenium.common.exceptions import NoSuchElementException, TimeoutException
+from selenium.common.exceptions import NoSuchElementException, StaleElementReferenceException, TimeoutException
 from selenium.webdriver.common.actions import interaction
 from selenium.webdriver.common.actions.action_builder import ActionBuilder
 from selenium.webdriver.common.actions.pointer_input import PointerInput
@@ -184,17 +184,22 @@ class BasePage:
         images = self.driver.find_elements(AppiumBy.XPATH, "//android.widget.ImageView")
 
         for index, image in enumerate(images):
-            size = image.size
-            if size["width"] <= 1 or size["height"] <= 1:
-                broken_images.append(
-                    {
-                        "index": index,
-                        "resource_id": image.get_attribute("resource-id"),
-                        "content_desc": image.get_attribute("content-desc"),
-                        "bounds": image.get_attribute("bounds"),
-                        "size": size,
-                        "reason": "Invalid image size",
-                    }
-                )
+            try:
+                size = image.size
+                if size["width"] <= 1 or size["height"] <= 1:
+                    broken_images.append(
+                        {
+                            "index": index,
+                            "resource_id": image.get_attribute("resource-id"),
+                            "content_desc": image.get_attribute("content-desc"),
+                            "bounds": image.get_attribute("bounds"),
+                            "size": size,
+                            "reason": "Invalid image size",
+                        }
+                    )
+            except StaleElementReferenceException:
+                # 홈 배너(ViewPager)가 자동 회전하며 순회 중인 ImageView를 교체하는 경우 발생.
+                # 요소가 사라진 것뿐이라 "깨진 이미지"가 아니므로 건너뛴다.
+                continue
 
         return broken_images
